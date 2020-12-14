@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-demo-test
+  namespace: argocd
+spec:
+  project: argocd-demo
+  source:
+    repoURL: https://github.com/jeichler/argocd-kustomize-minisample.git
+    targetRevision: test
+    path: .
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argo-test
+  syncPolicy:
+    automated:
+      prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+    syncOptions:     # Sync options which modifies sync behavior
+    - Validate=false # disables resource validation (equivalent to 'kubectl apply --validate=true')
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-demo-prod
+  namespace: argocd
+spec:
+  project: argocd-demo
+  source:
+    repoURL: https://github.com/jeichler/argocd-kustomize-minisample.git
+    targetRevision: prod
+    path: .
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argo-prod
+  syncPolicy:
+    automated:
+      prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+    syncOptions:     # Sync options which modifies sync behavior
+    - Validate=false # disables resource validation (equivalent to 'kubectl apply --validate=true')
